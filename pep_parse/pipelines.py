@@ -8,6 +8,7 @@
 import csv
 from collections import Counter
 from datetime import datetime
+from pathlib import Path
 
 
 class PepParsePipeline:
@@ -21,12 +22,16 @@ class PepParsePipeline:
         return item
 
     def close_spider(self, spider):
+        feed_path = next(iter(spider.settings["FEEDS"]))
+
+        results_dir = Path(feed_path).parent
+        results_dir.mkdir(parents=True, exist_ok=True)
         filename = (
-            f'results/status_summary_'
+            f'status_summary_'
             f'{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv'
         )
-
-        with open(filename, 'w', encoding='utf-8') as csvfile:
+        filepath = results_dir / filename
+        with open(filepath, 'w', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(['Статус', 'Количество'])
             for status, count in sorted(self.statuses.items()):
