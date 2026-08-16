@@ -8,7 +8,6 @@
 import csv
 from collections import Counter
 from datetime import datetime
-from pathlib import Path
 
 
 class PepParsePipeline:
