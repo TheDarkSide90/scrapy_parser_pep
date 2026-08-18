@@ -9,9 +9,12 @@ class PepSpider(scrapy.Spider):
     start_urls = ['https://peps.python.org/']
 
     def parse(self, response):
-        pep_list = response.css('a[href^="pep-"]::attr(href)').getall()
+        pep_list = response.css(
+            'a[href^="pep-"]::attr(href)'
+        ).getall()
         for pep_link in pep_list:
-            yield response.follow(pep_link, callback=self.parse_pep)
+            pep_url = response.urljoin(pep_link + '/')
+            yield response.follow(pep_url, callback=self.parse_pep)
 
     def parse_pep(self, response):
         data = {
